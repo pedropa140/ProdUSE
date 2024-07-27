@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/chatbot.css"
+</head>
+<body class="pt-5">
+    {% include "navbar.html" %}
+    <div class="main-content">
+        <div class="header--title">
+            <h1><div class="chatbot-text display-5">ChatBot </div> <div class="powered-by-text display-6">Powered by Gemini AI by <b><span style="color: #4285F4;">G</span><span style="color: #DB4437">o</span><span style="color: #F4B400">o</span><span style="color: #4285F4;">g</span><span style="color: #0F9D58">l</span><span style="color: #DB4437">e</span></span></b></div></h1>
+        </div>
+
+        <div class="display-6 messages" id="messages">
+        </div>
+
+        <form id="message-form" class="message-form">
+            <input type="text" id="user-input" class="message-input" placeholder="Type your message...">
+            <button type="submit" class="send-button">↑</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('message-form');
+            const userInput = document.getElementById('user-input');
+            const messagesDiv = document.getElementById('messages');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                const userMessage = userInput.value.trim();
+                if (userMessage === '') return; 
+                displayMessage(userMessage, 'user-message');
+                fetch('/send-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayMessage(data.message, 'bot-message');
+                    messagesDiv.dataset.chatHistory = JSON.stringify(data.chat_history);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+                userInput.value = '';
+            });
+
+            function displayMessage(message, className) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', className);
+                // Instead of setting textContent, set innerHTML to render HTML
+                messageDiv.innerHTML = message;
+                messagesDiv.appendChild(messageDiv);
+
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            const initialChatHistory = JSON.parse(messagesDiv.dataset.chatHistory || '[]');
+
+            initialChatHistory.forEach(({ role, parts }) => {
+                // Instead of joining parts with space, render them individually
+                parts.forEach(part => displayMessage(part, role === 'user' ? 'user-message' : 'bot-message'));
+            });
+        });
+    </script>
+</body>
+</html>

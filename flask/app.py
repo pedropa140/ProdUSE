@@ -129,3 +129,60 @@ def authorized():
     global user_logged_in
     user_logged_in = True
     return redirect(url_for('education'))
+
+@app.route("/chatbot", methods=["GET", "POST"])
+def chatbot():
+    model = genai.GenerativeModel('models/gemini-pro')
+    if 'chat_history' not in session:
+        session['chat_history'] = []
+
+    chat_history = session['chat_history']
+
+    response = None
+    formatted_message = ""
+
+    if request.method == 'POST':
+        user_message = request.form.get('message')
+        chat_history.append({'role': 'user', 'parts': [user_message]})
+        response = model.generate_content(chat_history)
+        chat_history.append({'role': 'model', 'parts': [response.text]})
+        session['chat_history'] = chat_history
+        if response:
+            lines = response.text.split("\n")
+            for line in lines:
+                bold_text = ""
+                while "**" in line:
+                    start_index = line.index("**")
+                    end_index = line.index("**", start_index + 2)
+                    bold_text += "<strong>" + line[start_index + 2:end_index] + "</strong>"
+                    line = line[:start_index] + bold_text + line[end_index + 2:]
+                formatted_message += line + "<br>"
+            # print(formatted_message)
+
+    return render_template("chatbot.html", response=formatted_message)
+
+@app.route("/send-message", methods=['POST'])
+def send_message():
+    data = request.get_json()
+    user_message = data.get('message')
+
+    chat_history = data.get('chat_history', [])
+
+    chat_history.append({'role': 'user', 'parts': [user_message]})
+
+    model = genai.GenerativeModel('models/gemini-pro')
+    response = model.generate_content(chat_history)
+    bot_response = response.text
+    formatted_message = ""
+    lines = bot_response.split("\n")
+    for line in lines:
+        bold_text = ""
+        while "**" in line:
+            start_index = line.index("**")
+            end_index = line.index("**", start_index + 2)
+            bold_text += "<strong>" + line[start_index + 2:end_index] + "</strong>"
+            line = line[:start_index] + bold_text + line[end_index + 2:]
+        formatted_message += line + "<br>"
+    # print(formatted_message)
+    
+    return jsonify({'message': formatted_message, 'chat_history': chat_history})

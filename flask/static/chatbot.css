@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+}
+
+body {
+    
+    display: flex;
+}
+
+.header--title {
+    color: black;
+    text-align: center; 
+    text-decoration: bold;   
+    font-weight: bold;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 25px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.messages {
+    height: 38vw;
+    overflow-y: scroll;
+    margin-bottom: 20px;
+}
+
+.message {
+    margin-bottom: 10px;
+    clear: both;
+}
+.messages::-webkit-scrollbar {
+    visibility: hidden;
+    width: 0px;
+}
+
+.user-message {
+    background-color: #5fc9f8;
+    border-radius: 10px;
+    color: white;
+    max-width: 70%;
+    padding: 10px;
+    word-wrap: break-word;
+    float: right;
+}
+
+.bot-message {
+    background-color: #8e8e93;
+    color: #fff;
+    max-width: 70%;
+    border-radius: 10px;
+    padding: 10px;
+    word-wrap: break-word;
+    float: left;
+}
+
+.message-input {
+    width: calc(100% - 80px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.message-form {
+    width: 100%;
+    display: flex;
+}
+.send-button {
+    width: 80px;
+    padding: 10px 20px;
+    background-color: lightblue;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.send-button:hover {
+    background-color: #5fc9f8;
+    transition: 1s;
+}
