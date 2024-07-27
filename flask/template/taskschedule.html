@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/static/images/icon.png">
+    <title>User Tasks</title>
+    <style>
+        body {
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        #taskInput {
+            margin-bottom: 20px;
+        }
+
+        .list-group-item {
+            cursor: move;
+            font-size: 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        .delete-btn {
+            color: #fff;
+            font-size: 1.2rem;
+            background-color: #dc3545;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        .delete-btn:hover {
+            background-color: #f00;
+        }
+
+        #submitBtn {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #submitBtn button {
+            font-size: 20px;
+            width: 100%;
+        }
+
+        .card-container {
+            display: flex;
+            overflow-x: auto !important;
+            gap: 10px;
+            padding-bottom: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .card-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .card {
+            flex: 0 0 auto;
+            width: 30%;
+        }
+        
+        .card-inner {
+            position: relative;
+        }
+        
+        .card-img-top {
+            border-radius: 0.75rem 0.75rem 0 0; 
+            object-fit: cover;
+            height: 10%;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .disabled-btn {
+            background-color: #f1f1f1;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+.alert-custom {
+    background-color: rgba(0, 0, 0, 1);
+    border-radius: 0.5rem;
+    color: #fff;
+}
+
+.alert-custom .alert-content {
+    padding: 1rem;
+}
+
+/* Close button styles */
+.btn-close {
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="d-flex justify-content-center">
+    <header class='flex-col'>
+        {% include 'navbar.html' %}
+    </header>
+    <div class="flex-col p-4 w-75 justify-content-center" style="margin-top: 60px;">
+        <div class="d-flex align-items-center m-3">
+            <div class="mask me-2" style="
+                background: linear-gradient(
+                    45deg,
+                    hsla(140, 100%, 50%, .3), /* Green color for the gradient */
+                    hsla(100, 100%, 50%, 0.2) 100%
+                );
+                border-radius: 50%;
+                display: flex;
+                width: 5rem;
+                height: 5rem;
+                justify-content: center;
+                align-items: center;
+            ">
+            <img src="../static/Images/assets/logo.png" alt="Logo" class="rounded-5" style="max-width: 100%; max-height: 100%;">
+                <!-- Icon or placeholder content -->
+                <!-- Example: <i class="bi bi-person"></i> -->
+            </div>
+            <h1 class="mb-0 ms-3 fs-0 display-6 ">Welcome back!<br> Let's get your tasks together.</h3>
+        </div>
+        <div class='mt-lg-5'>
+        <h2 class="title d-flex mb-3 fs-3 text-muted">Input Tasks</h2>
+        <div id="taskInput" class="input-group-lg d-flex mb-3">
+            <input type="text" id="task" class="form-control rounded-start" placeholder="Enter your task">
+            <button class="btn btn-success rounded-end" type="button" onclick="addTask()" style="background-color: #6ea280;">Add</button>
+        </div>
+        <div id="taskList" class="card-container rounded-6 flex overflow-auto ">  
+            <!-- Cards will be added here dynamically -->
+        </div>
+        <div id="submitBtn" style="display: none;">
+            <button class="btn btn-success w-auto bg-grad" type="button" onclick="submitTasks()" style="background-color: #6ea280;">Submit Tasks</button>
+        </div>
+        </div>
+    </div>
+    
+
+    <script>
+        var tasksAdded = 0;
+
+        document.getElementById("task").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                addTask();
+            }
+        });
+
+        function addTask() {
+            var taskInput = document.getElementById("task");
+            var task = taskInput.value.trim();
+            if (task !== "") {
+                var cardContainer = document.getElementById("taskList");
+                var card = createListItem(task);
+                cardContainer.appendChild(card);
+                taskInput.value = "";
+                tasksAdded++;
+                toggleSubmitBtn();
+            } else {
+                alert("Please enter a valid task!");
+            }
+        }
+
+        function createListItem(task) {
+            var card = document.createElement("div");
+            card.className = "card mb-4 mb-xl-0 card-hover border";
+        
+            var cardInner = document.createElement("div");
+            cardInner.className = "card-inner";
+        
+            var img = document.createElement("img");
+            img.alt = "Task Image";
+            img.className = "img-fluid w-100 rounded-top-3 card-img-top";
+        
+            img.onload = function() {
+                fetch('/rank-keywords', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: task }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var cardBody = document.createElement("div");
+                    cardBody.className = "p-4 d-flex align-items-center";
+        
+                    var title = document.createElement("h3");
+                    title.className = "card-title mb-4 text-wrap flex";
+                    title.textContent = task;
+        
+                    var keywordsList = document.createElement("ul");
+                    keywordsList.className = "keywords-list";
+        
+                    // Check if data.keywords is iterable
+                    if (data.keywords && typeof data.keywords.forEach === 'function') {
+                        data.keywords.forEach(function(keyword) {
+                            var listItem = document.createElement("li");
+                            listItem.textContent = keyword[0] + ': ' + keyword[1];
+                            keywordsList.appendChild(listItem);
+                        });
+                    }
+        
+                    var deleteBtn = createDeleteButton(cardInner);
+                    cardBody.appendChild(title);
+                    cardBody.appendChild(keywordsList);
+                    cardBody.appendChild(deleteBtn);
+        
+                    cardInner.appendChild(img);
+                    cardInner.appendChild(cardBody);
+        
+                    card.appendChild(cardInner);
+                })
+                .catch(error => console.error('Error:', error));
+            };
+        
+            fetch('/rank-keywords', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: task }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.keywords && data.keywords.length > 0) {
+                    var imageURL = fetchImageURL(data.keywords);
+                    img.src = imageURL;
+                } else {
+                    var defaultImageURL = 'https://via.placeholder.com/300';
+                    img.src = defaultImageURL;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        
+            return card;
+        }
+        
+        function fetchImageURL(keyword) {
+            var baseAPIUrl = 'https://source.unsplash.com/';
+            var imageSize = '800x600'; 
+            var query = encodeURIComponent(keyword); 
+            
+            var finalURL = baseAPIUrl + imageSize + '/?' + query;
+            console.log(finalURL)
+            return finalURL;
+        }
+        
+        function createDeleteButton(listItem) {
+            var deleteBtnContainer = document.createElement("div");
+            deleteBtnContainer.className = "d-flex flex-row flex-fill justify-content-end"; 
+            var deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "×"; 
+            deleteBtn.className = "rounded-3 delete-btn bg-danger text-white self-align-end"; 
+            deleteBtn.onclick = function () {
+                listItem.parentElement.remove();
+                tasksAdded--;
+                toggleSubmitBtn();
+            };
+        
+            deleteBtnContainer.appendChild(deleteBtn);
+            return deleteBtnContainer;
+        }
+        
+
+        function toggleSubmitBtn() {
+            document.getElementById("submitBtn").style.display = tasksAdded >= 1 ? "block" : "none";
+        }        
+
+        function submitTasks() {
+            var tasks = Array.from(document.querySelectorAll(".card-title")).map(task => task.textContent);
+            fetch('/taskschedule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tasks: tasks }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Create a Bootstrap alert box
+                var alertBox = document.createElement("div");
+                alertBox.className = "alert alert-dismissible fade show position-fixed top-50 start-50 translate-middle alert-custom";
+                alertBox.role = "alert";
+        
+                alertBox.innerHTML = `
+                    <div class="alert-content">
+                        <strong>${data.message}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+        
+                document.body.appendChild(alertBox);
+        
+                alertBox.classList.add("shadow");
+        
+                setTimeout(() => {
+                    alertBox.remove();
+                }, 5000);
+        
+                if (data.success) {
+                    document.getElementById("taskList").innerHTML = "";
+                    tasksAdded = 0;
+                    toggleSubmitBtn();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
+</html>

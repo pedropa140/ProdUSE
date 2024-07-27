@@ -1,0 +1,41 @@
+@import url('../static/colors.css');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+.btn-custom {
+    color: var(--text-color);
+    background-color: transparent;
+    border-color: var(--primary-color);
+}
+
+.navbar-brand {
+    color: var(--primary-color);
+    font-style: bold;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.nav-item:hover {
+    background-color: var(--primary-color); /* Green color */
+    /* change text to white by force */
+    color: #fff !important; /* White text color */
+    padding-left: 3rem;
+}
+
+.nav-item {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+}
+
+.nav-item:hover, .nav-item:active {
+    background-color: var(--primary-color); /* Green color */
+    color: #fff !important; /* White text color */
+    padding-left: 3rem;
+}
+
+/* Optionally adjust hover and active states: */
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active {
+    background-color: var(--btn-hover); /* Lighter shade on hover */
+    border-color: var(--primary-color);
+}
