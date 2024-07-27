@@ -1,0 +1,4 @@
+.env
+.venv
+backup/*
+gitpush.py
