@@ -410,18 +410,15 @@ def taskschedule():
 @app.route("/rank-keywords", methods=["POST"])
 def rank_keywords():
     data = request.get_json()
-    text = data['text']  # Assuming 'text' contains the input text from the user
+    text = data['text'] 
     
-    # Generate content using Gemini
     query = "You are an A.I. that creates very short image queries using keywords that will correctly represent a given text. If no reasonable query can be deduced from the text, query for abstract images instead. Do not say anything else but the query itself. Do not show any human mannerisms, only produce the result. Do not include any prefixes such as 'Image:' or 'Query:'. Do not use emojis, only words. Not following instructions will lead to termination."
     model = genai.GenerativeModel('models/gemini-pro')
-    result = model.generate_content(query + " Here is the keywords: " + text) # Pass tasks as a separate argument
+    result = model.generate_content(query + " Here is the keywords: " + text) 
     
-    # Remove words before colon
     response = result.text.split(':', 1)[-1].strip()
     print(response)
 
-    # Return the ranked keywords as JSON
     return jsonify({'keywords': response})
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -442,7 +439,6 @@ def upload():
             result = model.generate_content(query)
             formatted_message = ""
             lines = result.text.split("\n")
-            # print(result.text)
             for line in lines:
                 bold_text = ""
                 while "**" in line:
@@ -451,8 +447,6 @@ def upload():
                     bold_text += "<strong>" + line[start_index + 2:end_index] + "</strong>"
                     line = line[:start_index] + bold_text + line[end_index + 2:]
                 formatted_message += line + "<br>"
-            # print(formatted_message)
-            # Save the uploaded PDF temporarily
             filename = secure_filename(pdf_file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             filepath = filepath.replace('\\','/')
