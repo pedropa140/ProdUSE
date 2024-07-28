@@ -514,3 +514,35 @@ def extract_text_from_pdf(pdf_file):
     for page_num in range(num_pages):
         text += pdf_reader.pages[page_num].extract_text()
     return text
+
+@app.route('/events', methods=["GET", "POST"])
+def events():
+    if request.method == "POST":
+        name = request.json.get('name')
+        description = request.json.get('description')
+        location = request.json.get('location')
+        date = request.json.get('date')
+        startTime = request.json.get('startTime')
+        endTime = request.json.get('endTime')
+        timezone = request.json.get('timezone')
+        print(f'name {name}')
+        print(f'Description: {description}')
+        print(f'Location: {location}')
+        print(f'Date: {date}')
+        print(f'Start Time: {startTime}')
+        print(f'End Time: {endTime}')
+        print(f'Timezone: {timezone}')
+        if name:
+            # Process the event name as needed (e.g., save to database)
+            print("Attending event:", name)
+            calendarprogram.addSchedule(name, description, location, date, startTime, endTime)
+            return {"message": f"Attending event: {name}"}, 200
+        else:
+            return {"error": "Event name not provided in request body"},
+    else:
+       return render_template("events.html")
+    
+
+@app.route("/education")
+def education():
+    return render_template("education.html")

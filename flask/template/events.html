@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/static/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        /* Custom CSS */
+        body {
+            background-image: url("/static/images/work.jpg"); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-size: cover;
+        }
+
+        /* Additional styling for the content */
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* Adjust opacity as needed */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9); /* Adjust opacity as needed */
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<header>
+    {% include 'navbar.html' %}
+</header>
+<body>
+
+    <div class="container mt-4">
+        <h2>Professional Development</h2>
+        <h4>Events Near You: </h4>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="careerEvents">
+            <!-- Dynamic career event cards will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Define tech-related career event titles and descriptions
+            var careerEventData = [
+                { 
+                    title: "Virtual Career Fair: Tech Industry", 
+                    description: "Join us for a virtual career fair focused on opportunities in the tech industry. Connect with recruiters and learn about internships and full-time positions.",
+                    location: "Bridgewater Hall Lower Mosley Street Manchester M2 3WS",
+                    date: "2024-03-31",
+                    startTime: "13:00",
+                    endTime: "16:00",
+                    timezone: "+00:00",
+                },
+                { 
+                    title: "Mental Health Awareness Workshop", 
+                    description: "In this workshop, we'll discuss strategies for managing stress and maintaining mental well-being. Open to all students.", 
+                    location: "The Crown Resort, Melbourne 8 Whiteman Street, Southbank, VIC, 3006",
+                    date: "2024-04-01",
+                    startTime: "12:00",
+                    endTime: "16:00",
+                    timezone: "+10:00",
+                },
+                { 
+                    title: "Resume Building Workshop", 
+                    description: "Learn how to create a professional resume that highlights your skills and experiences effectively. Bring your resume for feedback!", 
+                    location: "ICC Sydney 14 Darling Dr, Sydney, NSW, 2000",
+                    date: "2024-04-02",
+                    startTime: "12:00",
+                    endTime: "16:00",
+                    timezone: "+10:00",
+                },
+                { 
+                    title: "Perth STEM Women Graduate Careers Event", 
+                    description: "STEM Careers Event introducing students and graduates to STEM employers in Perth. The event is targeted towards people who are studying, or recently graduated from, a STEM related course at university and with an interest in working in industry.",
+                    location: "Perth Convention and Exhibition Centre 21 Mounts Bay Road, Perth, WA, 6000",
+                    date: "2024-04-20",
+                    startTime: "12:00",
+                    endTime: "16:00",
+                    timezone: "+00:00",
+                },
+                { 
+                    title: "Brisbane STEM Women Graduate Careers Event", 
+                    description: "STEM Careers Event introducing students and graduates to STEM employers in Brisbane. The event is targeted towards people who are studying, or recently graduated from, a STEM related course at university and with an interest in working in industry.", 
+                    location: "Brisbane Convention & Exhibition Centre Glenelg Street, South Brisbane, QLD, 4101",
+                    date: "2024-05-28",
+                    startTime: "13:00",
+                    endTime: "16:00",
+                    timezone: "+10:00",
+                },
+                { 
+                    title: "London STEM Women Graduate Careers Event", 
+                    description: "STEM Careers Event introducing students and graduates to STEM employers in London. The event is targeted towards people who are studying, or recently graduated from, a STEM related course at university and with an interest in working in industry.", 
+                    location: "QEII Centre Broad Sanctuary, London, England, SW1P 3EE",
+                    date: "2024-06-19",
+                    startTime: "12:00",
+                    endTime: "16:30",
+                    timezone: "+10:00",
+                }
+            ];
+
+            // Get the container to insert career event cards
+            var careerEventsContainer = document.getElementById('careerEvents');
+
+            // Loop through career event data and create career event cards
+            careerEventData.forEach(function (event, index) {
+                var eventCard = document.createElement('div');
+                eventCard.className = 'col';
+                eventCard.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${event.title}</h5>
+                            <p class="card-text">${event.description}</p>
+                            <button class="btn btn-primary" onclick="attendEvent('${event.title}', '${event.description}', '${event.location}', '${event.date}', '${event.startTime}', '${event.endTime}', '${event.timezone}')">Attend Event</button>
+                        </div>
+                    </div>
+                `;
+                careerEventsContainer.appendChild(eventCard);
+            });
+        });
+
+        function attendEvent(name, description, location, date, startTime, endTime, timezone) {
+            // Make an AJAX request to the server to submit the event name
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/events", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("Attending event: " + name);
+                    } else {
+                        alert("Failed to attend event: " + name);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ name: name, description: description, location: location, date: date, startTime: startTime, endTime: endTime, timezone: timezone }));
+        }
+    </script>
+</body>
+</html>
