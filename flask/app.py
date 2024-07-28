@@ -259,7 +259,7 @@ def generate_scheduling_query(tasks):
     query +=  """
     As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. 
     Keep in mind when creating events the times should happen after the given time above unless specified otherwise by the user.
-    Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user. 
+    Your goal is to ensure the best schedule to priotize a good lifestyle for a student. 
     Your instructions should be clear and precise to the instructions below.
         INCLUDE ALL TASKS PASSED BY THE USER.
         Do not generate any text that is NOT the format below. I DO NOT want any leading or trailing comments.
