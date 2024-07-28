@@ -3,19 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
+    <meta name="description" content="Prod.USE - Produce and Prod.USE">
     <link rel="icon" type="image/png" href="/static/images/icon.png">
     <link rel="stylesheet" href="../static/styles.css">
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.54/build/spline-viewer.js"></script>
 
     <title>Prod.USE</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .content h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #333;
+        }
+        .content p {
+            margin: 10px 0;
+            font-size: 1.2em;
+            color: #666;
+        }
+        .signin-link .button-81 {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .signin-link .button-81:hover {
+            background-color: #0056b3;
+        }
+        spline-viewer {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .content h1 {
+                font-size: 2em;
+            }
+            .content p {
+                font-size: 1em;
+            }
+            spline-viewer {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="content">
             <h1>Prod.USE</h1>
             <p>Produce and Prod.USE</p>
-            <br>
             <a href="/login" class="signin-link">
                 <button class="button-81" role="button">Get Started</button>
             </a>
