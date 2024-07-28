@@ -1,4 +1,7 @@
-from flask import Flask, jsonify, render_template, redirect, request, session, url_for, g, session, send_file, secure, send_from_directory
+
+from flask import send_file
+from flask import send_from_directory
+from flask import Flask, jsonify, render_template, redirect, request, session, url_for, g, session
 import json
 import os
 from os import path, urandom
