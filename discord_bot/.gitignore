@@ -1,0 +1,5 @@
+.env
+__pycache__/
+user_database.db
+credentials.json
+token/*

@@ -31,8 +31,8 @@ from googleapiclient.errors import HttpError
 import calendarprogram
 
 from authlib.integrations.flask_client import OAuth
-SCOPES = ['https://www.googleapis.com/auth/calendar',  'https://www.googleapis.com/auth/presentations', 'https://www.googleapis.com/auth/documents'] # USE SCOPES FOR CREDENTIALS
-# GET CREDENTIALS LATER
+
+SCOPES = ['https://www.googleapis.com/auth/calendar',  'https://www.googleapis.com/auth/presentations', 'https://www.googleapis.com/auth/documents']
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
@@ -41,17 +41,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 load_dotenv()
 MONGODB_URI = os.getenv("MONGODB_URL")
 
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
-@app.context_processor
-def inject_exists_credentials():
-    return {'exists_credentials': os.path.exists('credentials.json')}
-
-@app.route("/")
-def mainpage():
-    return render_template("main.html")
 
 oauth = OAuth(app)
 oauth.register(
@@ -63,6 +52,22 @@ oauth.register(
     authorize_url='https://dev-jkuyeavh0j4elcuc.us.auth0.com/oauth/authorize',
     client_kwargs={'scope': 'scope_required_by_provider'}
 )
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.context_processor
+def inject_exists_credentials():
+    return {'exists_credentials': os.path.exists('credentials.json')}
+
+
+def get_db():
+    client = pymongo.MongoClient(MONGODB_URI)
+    db = client.get_default_database()  # Assuming your database name is provided in the MongoDB URI
+    return db
+
+@app.route("/")
+def mainpage():
+    return render_template("main.html")
 
 def get_db():
     client = pymongo.MongoClient(MONGODB_URI)
