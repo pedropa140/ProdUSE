@@ -8,12 +8,12 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import time
 
-SCOPES = 'https://www.googleapis.com/auth/calendar'
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 def addSchedule(name, description, location, date, startTime, endTime):
-    local_time = datetime.datetime.now()
-    local_timezone = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
-    current_time = datetime.datetime.now(local_timezone)
+    local_time = datetime.now()
+    local_timezone = local_time.astimezone().tzinfo
+    current_time = datetime.now(local_timezone)
     timezone_offset = current_time.strftime('%z')
     offset_string = list(timezone_offset)
     offset_string.insert(3, ':')
@@ -28,15 +28,15 @@ def addSchedule(name, description, location, date, startTime, endTime):
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port = 0)
+            creds = flow.run_local_server(port=0)
 
             with open("token.json", "w") as token:
                 token.write(creds.to_json())
 
     try:
-        service = build("calendar", "v3", credentials = creds)
-        now = datetime.datetime.now().isoformat() + "Z"
-        event_result = service.events().list(calendarId = "primary", timeMin=now, maxResults = 10, singleEvents = True, orderBy = "startTime").execute()
+        service = build("calendar", "v3", credentials=creds)
+        now = datetime.utcnow().isoformat() + "Z"
+        event_result = service.events().list(calendarId="primary", timeMin=now, maxResults=10, singleEvents=True, orderBy="startTime").execute()
 
         events = event_result.get("items", [])
 
@@ -55,14 +55,12 @@ def addSchedule(name, description, location, date, startTime, endTime):
             "start": {
                 "dateTime": f"{date}T{startTime}:00" + timeZone,
             },
-
             "end": {
                 "dateTime": f"{date}T{endTime}:00" + timeZone,
             },
         }
 
-
-        event = service.events().insert(calendarId = "primary", body = event).execute()
+        event = service.events().insert(calendarId="primary", body=event).execute()
         print(f"Event Created {event.get('htmlLink')}")
 
     except HttpError as error:
@@ -97,7 +95,7 @@ def delete_calendar_event(event_id, start_time_str):
         if e.resp.status == 404:
             print("Event ID not found. Trying to find event by start time...")
             try:
-                start_time = datetime.datetime.fromisoformat(start_time_str)
+                start_time = datetime.fromisoformat(start_time_str)
                 end_time = start_time + datetime.timedelta(minutes=1)
                 start_time_iso = start_time.isoformat()
                 end_time_iso = end_time.isoformat()
