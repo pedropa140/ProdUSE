@@ -1,0 +1,131 @@
+/* Basic Styles */
+.bg-purple {
+  background-color: #6f42c1;
+} /* A shade of purple */
+
+#typing-text {
+  font-family: monospace;
+  text-wrap: wrap;
+  color: #00ff00;
+}
+
+/* Custom background animation styles */
+
+.bg-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.6; /* Adjust opacity as needed */
+  pointer-events: none;
+  background: linear-gradient(45deg, #2ecc71, #27ae60, #2ecc71, #27ae60);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/* Terminal window styling */
+.terminal-window {
+  background-color: black;
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: 20px;
+  width: 600px; /* Adjust width as needed */
+  height: 400px; /* Adjust height as needed */
+  position: relative;
+  padding: 4rem;
+}
+
+.terminal-toolbar {
+  background-color: #333;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.terminal-buttons {
+  display: flex;
+}
+
+.terminal-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+  background-color: #777;
+}
+
+.terminal-close {
+  background-color: #ff5f56; /* Red color for close button */
+}
+
+.terminal-maximize {
+  background-color: #00d1b2; /* Green color for maximize button */
+}
+
+.terminal-minimize {
+  background-color: #ffdd57; /* Yellow color for minimize button */
+}
+
+#typing-text {
+  font-family: monospace;
+  color: white; /* Green font color */
+  font-size: 2rem;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+.custom-card-body {
+  width: 100%; /* Adjust the width as per your requirement */
+  margin: 0 auto; /* This will horizontally center the card body within the card */
+  overflow: auto;
+  max-height: 250%;
+}
+
+.match-child-width {
+  width: 215%;
+}
+
+/* Additional CSS for styling */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.cool-header {
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+}
+.dynamic-body {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
