@@ -28,7 +28,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from calendarprogram
+import calendarprogram
 
 from authlib.integrations.flask_client import OAuth
 
