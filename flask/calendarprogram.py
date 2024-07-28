@@ -68,80 +68,80 @@ def addSchedule(name, description, location, date, startTime, endTime):
     except HttpError as error:
         print("An error occurred:", error)
 
-    def get_credentials():
-        creds = None
-        if os.path.exists('token.json'):
-            creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', SCOPES)
-                creds = flow.run_local_server(port=0)
-            with open('token.json', 'w') as token:
-                token.write(creds.to_json())
-        return creds
+def get_credentials():
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    return creds
 
 
-    import datetime
+import datetime
 
-    def delete_calendar_event(event_id, start_time_str):
-        creds = get_credentials()
-        service = build('calendar', 'v3', credentials=creds)
-        
-        try:
-            service.events().delete(calendarId='primary', eventId=event_id).execute()
-            return True
-        except HttpError as e:
-            if e.resp.status == 404:
-                print("Event ID not found. Trying to find event by start time...")
-                try:
-                    start_time = datetime.datetime.fromisoformat(start_time_str)
-                    end_time = start_time + datetime.timedelta(minutes=1)
-                    start_time_iso = start_time.isoformat()
-                    end_time_iso = end_time.isoformat()
+def delete_calendar_event(event_id, start_time_str):
+    creds = get_credentials()
+    service = build('calendar', 'v3', credentials=creds)
+    
+    try:
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        return True
+    except HttpError as e:
+        if e.resp.status == 404:
+            print("Event ID not found. Trying to find event by start time...")
+            try:
+                start_time = datetime.datetime.fromisoformat(start_time_str)
+                end_time = start_time + datetime.timedelta(minutes=1)
+                start_time_iso = start_time.isoformat()
+                end_time_iso = end_time.isoformat()
 
-                    events_result = service.events().list(calendarId='primary', timeMin=start_time_iso, timeMax=end_time_iso).execute()
-                    events = events_result.get('items', [])
-                    if events:
-                        event_id_to_delete = events[0]['id']
-                        service.events().delete(calendarId='primary', eventId=event_id_to_delete).execute()
-                        return True
-                    else:
-                        print("Event not found by start time.")
-                        return False
-                except Exception as e:
-                    print(f"Error deleting event by start time: {e}")
+                events_result = service.events().list(calendarId='primary', timeMin=start_time_iso, timeMax=end_time_iso).execute()
+                events = events_result.get('items', [])
+                if events:
+                    event_id_to_delete = events[0]['id']
+                    service.events().delete(calendarId='primary', eventId=event_id_to_delete).execute()
+                    return True
+                else:
+                    print("Event not found by start time.")
                     return False
-            else:
-                print(f"Error deleting event by ID: {e}")
+            except Exception as e:
+                print(f"Error deleting event by start time: {e}")
                 return False
-            
-    def parse_event_details(event_details):
-        datetime_str, description = event_details.split(' - ')
-        datetime_obj = datetime.fromisoformat(datetime_str)
-        formatted_date = datetime_obj.strftime('%B %d')
-        formatted_time = datetime_obj.strftime('%I:%M %p')
-        end_time = (datetime_obj + timedelta(hours=1)).strftime('%I:%M %p')
-        user_friendly_details = f"{description}<br><br>{formatted_time} - {end_time}"
+        else:
+            print(f"Error deleting event by ID: {e}")
+            return False
+        
+def parse_event_details(event_details):
+    datetime_str, description = event_details.split(' - ')
+    datetime_obj = datetime.fromisoformat(datetime_str)
+    formatted_date = datetime_obj.strftime('%B %d')
+    formatted_time = datetime_obj.strftime('%I:%M %p')
+    end_time = (datetime_obj + timedelta(hours=1)).strftime('%I:%M %p')
+    user_friendly_details = f"{description}<br><br>{formatted_time} - {end_time}"
 
-        return user_friendly_details
+    return user_friendly_details
 
-    def convert_to_iso8601(start_time_str):
-        try:
-            start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S%z")
-            return start_time.isoformat()
-        except ValueError:
-            return None
+def convert_to_iso8601(start_time_str):
+    try:
+        start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S%z")
+        return start_time.isoformat()
+    except ValueError:
+        return None
 
-    from datetime import datetime
+from datetime import datetime
 
-    def parse_datetime_to_day_number(datetime_str):
-        datetime_obj = datetime.strptime(datetime_str.split(' - ')[0], '%Y-%m-%dT%H:%M:%S%z')
-        day_number = datetime_obj.day
+def parse_datetime_to_day_number(datetime_str):
+    datetime_obj = datetime.strptime(datetime_str.split(' - ')[0], '%Y-%m-%dT%H:%M:%S%z')
+    day_number = datetime_obj.day
 
-        return day_number
+    return day_number
 
 if __name__ == "__main__":
     addSchedule("meep", "can i get a meep yall", "ur mom house", "2024-03-30", "16:00", "18:00")
