@@ -413,7 +413,7 @@ def rank_keywords():
     text = data['text'] 
     
     query = "You are an A.I. that creates very short image queries using keywords that will correctly represent a given text. If no reasonable query can be deduced from the text, query for abstract images instead. Do not say anything else but the query itself. Do not show any human mannerisms, only produce the result. Do not include any prefixes such as 'Image:' or 'Query:'. Do not use emojis, only words. Not following instructions will lead to termination."
-    model = genai.GenerativeModel('models/gemini-pro')
+    model = genai.GenerativeModel('models/gemini-1.5-pro')
     result = model.generate_content(query + " Here is the keywords: " + text) 
     
     response = result.text.split(':', 1)[-1].strip()
